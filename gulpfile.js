@@ -44,6 +44,11 @@ gulp.task('process-sass', function() {
     .pipe(gulp.dest(DEST_FOLDER + 'style/'))
 });
 
+gulp.task('process-icons', function(){
+  return gulp.src(SRC_FOLDER + 'icons/**')
+    .pipe(gulp.dest(DEST_FOLDER + 'icons/'));
+});
+
 gulp.task('watch', function(){
   gulp.watch(SRC_FOLDER + 'js/**/*.js', ['process-js']);
   gulp.watch(SRC_FOLDER + 'style/**/*.scss', ['process-sass']);
@@ -52,7 +57,7 @@ gulp.task('watch', function(){
 
 gulp.task('default', ['clean'], function(){
   runSequence(
-    ['process-html', 'process-js', 'process-sass'],
+    ['process-html', 'process-js', 'process-sass'], ['process-icons'],
     ['watch']
   )
 });

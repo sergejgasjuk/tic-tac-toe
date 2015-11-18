@@ -1,3 +1,15 @@
+@import 'font-icons';
+
+@mixin icon($icon) {
+  font-family: "untitled-font-1" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  line-height: 1;
+  content: $icon;
+}
+
 $greenSea:      #16a085;
 $pumpkin:       #d35400;
 $orange:        #f39c12;
@@ -27,10 +39,35 @@ $cellSize : 75px;
 }
 
 .ttt-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: $cellSize;
   height: $cellSize;
   margin: 2px;
   box-shadow: 0 0 1px $greenSea inset;
   border-radius: 2px;
   cursor: pointer;
+
+  &--x {
+    background: $clouds;
+
+    &:before {
+      @include icon("x");
+    }
+  }
+
+  &--o {
+    background: $asbestos;
+
+    &:before {
+      @include icon("o");
+    }
+  }
+
+  &--x,
+  &--o {
+    box-shadow: none;
+    cursor: default;
+  }
 }
