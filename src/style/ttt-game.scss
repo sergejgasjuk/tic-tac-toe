@@ -10,16 +10,16 @@
   content: $icon;
 }
 
-$greenSea:      #16a085;
-$pumpkin:       #d35400;
-$orange:        #f39c12;
-$pomegranate:   #c0392b;
-$clouds:        #ecf0f1;
-$asbestos:      #7f8c8d;
-$concrete:      #95a5a6;
 $black: #000;
 $white: #fff;
-
+$cellActiveBG: #ecf0f1;
+$cellHoverBG: #ecf0f1;
+$cellDefaultBG: $white;
+$cellColor1: #34495e;
+$cellColor2: #c0392b;
+$cellXBG: #3498db;
+$cellYBG: #e67e22;
+$cellBoxShadow: #16a085;
 $cellSize : 75px;
 
 .ttt-game {
@@ -31,7 +31,8 @@ $cellSize : 75px;
   display: flex;
   flex-flow: column;
   padding: 2px;
-  border: 1px solid black;
+  font-size: 25px;
+  border: 1px solid #2c3e50;
 }
 
 .ttt-row {
@@ -45,28 +46,45 @@ $cellSize : 75px;
   width: $cellSize;
   height: $cellSize;
   margin: 2px;
-  box-shadow: 0 0 1px $greenSea inset;
+  color: $cellColor1;
+  background: $white;
+  box-shadow: 0 0 1px $cellBoxShadow inset;
   border-radius: 2px;
   cursor: pointer;
+  overflow: hidden;
+  transition: background .2s;
+
+  &:hover {
+    background: $cellHoverBG;
+  }
 
   &--x {
-    background: $clouds;
+    background: $cellXBG !important;
 
     &:before {
       @include icon("x");
+      display: block;
+      padding-top: 15%;
+      font-size: 3em;
+      text-shadow: 2px 2px 1px rgba($black, 100);
     }
   }
 
   &--o {
-    background: $asbestos;
+    background: $cellYBG !important;
 
     &:before {
       @include icon("o");
+      display: block;
+      padding-top: 2%;
+      font-size: 2.2em;
+      text-shadow: 2px 2px 1px rgba($black, 100);
     }
   }
 
   &--x,
   &--o {
+    //background: $cellActiveBG;
     box-shadow: none;
     cursor: default;
   }

@@ -18,22 +18,28 @@ let Game = React.createClass({
 
   onHitCell: function(e) {
     if (e.target.classList.contains("ttt-cell--x")) {
-      console.log("ocupied");
       return false;
     }
 
+    console.log("cell hit");
+
     let coordX = e.target.dataset.x;
     let coordY = e.target.dataset.y;
+    let {playerSign} = this.state;
 
-    this._updateCell(coordY, coordX);
+    this._updateCell(coordY, coordX, playerSign);
+    playerSign = playerSign === CELL_X ? CELL_O : CELL_X;
+    this.setState({
+      playerSign
+    })
   },
 
-  _updateCell(y, x) {
-    let {field, playerSign} = this.state;
+  _updateCell(y, x, val) {
+    let {field} = this.state;
 
     field.forEach((row) => {
       row.forEach((cell) => {
-        field[y][x] = playerSign;
+        field[y][x] = val;
       });
     });
 
@@ -47,14 +53,13 @@ let Game = React.createClass({
     let setCellClassName = (val) => {
       if (val === CELL_X) {
         return "ttt-cell--x";
-      } else {
-        return '';
+      } else if (val === CELL_O) {
+        return "ttt-cell--o";
       }
     };
 
     return (
       <div className="ttt-game">
-        <h2>player figure: {this.state.playerSign === 1 ? "x" : "o"}</h2>
         <div className="ttt-field">
           {field.map((row, y) =>
             <div className="ttt-row" key={`row_${y}`}>
