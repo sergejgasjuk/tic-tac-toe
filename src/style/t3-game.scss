@@ -1,15 +1,6 @@
 @import 'font-icons';
 
-@mixin icon($icon) {
-  font-family: "untitled-font-1" !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-variant: normal !important;
-  text-transform: none !important;
-  line-height: 1;
-  content: $icon;
-}
-
+// colors
 $black: #000;
 $white: #fff;
 $cellActiveBG: #ecf0f1;
@@ -17,17 +8,32 @@ $cellHoverBG: #ecf0f1;
 $cellDefaultBG: $white;
 $cellColor1: #34495e;
 $cellColor2: #c0392b;
+$cellTextShadow: -1px 5px 5px rgba($black, 100);
 $cellXBG: #3498db;
 $cellYBG: #e67e22;
 $cellBoxShadow: #16a085;
 $cellSize : 75px;
 
-.ttt-game {
+// icon mixin
+@mixin icon-gen($icon) {
+  font-family: "untitled-font-1" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  display: block;
+  text-shadow: $cellTextShadow;
+  line-height: 1;
+  content: $icon;
+}
+
+// styles
+.t3-game {
   display: flex;
   justify-content: center;
 }
 
-.ttt-field {
+.t3-field {
   display: flex;
   flex-flow: column;
   padding: 2px;
@@ -35,11 +41,11 @@ $cellSize : 75px;
   border: 1px solid #2c3e50;
 }
 
-.ttt-row {
+.t3-row {
   display: flex;
 }
 
-.ttt-cell {
+.t3-cell {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,11 +68,9 @@ $cellSize : 75px;
     background: $cellXBG !important;
 
     &:before {
-      @include icon("x");
-      display: block;
+      @include icon-gen("x");
       padding-top: 15%;
       font-size: 3em;
-      text-shadow: 2px 2px 1px rgba($black, 100);
     }
   }
 
@@ -74,17 +78,14 @@ $cellSize : 75px;
     background: $cellYBG !important;
 
     &:before {
-      @include icon("o");
-      display: block;
+      @include icon-gen("o");
       padding-top: 2%;
       font-size: 2.2em;
-      text-shadow: 2px 2px 1px rgba($black, 100);
     }
   }
 
   &--x,
   &--o {
-    //background: $cellActiveBG;
     box-shadow: none;
     cursor: default;
   }

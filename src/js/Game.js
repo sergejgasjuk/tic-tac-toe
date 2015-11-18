@@ -1,8 +1,17 @@
 import React from "react";
 import ReactDom from "react-dom";
+import classNames from "classnames";
 
 const CELL_X = 1;
 const CELL_O = -1;
+let css = {
+  "game"  : "t3-game",
+  "field" : "t3-field",
+  "row"   : "t3-row",
+  "cell"  : "t3-cell",
+  "cell-x": "t3-cell--x",
+  "cell-o": "te-cell--o"
+};
 
 let Game = React.createClass({
   getInitialState: function() {
@@ -12,12 +21,15 @@ let Game = React.createClass({
         [0, 0, 0],
         [0, 0, 0]
       ],
-      playerSign: CELL_X
+      currentSign: CELL_X
     }
   },
 
   onHitCell: function(e) {
-    if (e.target.classList.contains("ttt-cell--x")) {
+    let isX = e.target.classList.contains("t3-cell--x");
+    let isO = e.target.classList.contains("t3-cell--o");
+
+    if (isX || isO) {
       return false;
     }
 
@@ -25,12 +37,12 @@ let Game = React.createClass({
 
     let coordX = e.target.dataset.x;
     let coordY = e.target.dataset.y;
-    let {playerSign} = this.state;
+    let {currentSign} = this.state;
 
-    this._updateCell(coordY, coordX, playerSign);
-    playerSign = playerSign === CELL_X ? CELL_O : CELL_X;
+    this._updateCell(coordY, coordX, currentSign);
+    currentSign = currentSign === CELL_X ? CELL_O : CELL_X;
     this.setState({
-      playerSign
+      currentSign
     })
   },
 
@@ -50,21 +62,19 @@ let Game = React.createClass({
 
   render: function() {
     let field = this.state.field;
-    let setCellClassName = (val) => {
-      if (val === CELL_X) {
-        return "ttt-cell--x";
-      } else if (val === CELL_O) {
-        return "ttt-cell--o";
-      }
-    };
 
     return (
-      <div className="ttt-game">
-        <div className="ttt-field">
+      <div className={css.game}>
+        <div className={css.field}>
           {field.map((row, y) =>
-            <div className="ttt-row" key={`row_${y}`}>
+            <div className={css.row} key={`row_${y}`}>
               {row.map((cell, x) =>
-                <div className={`ttt-cell ` + setCellClassName(cell)}
+                <div className={
+                      classNames({
+                      "t3-cell" : true,
+                      "t3-cell--x" : cell === 1,
+                      "t3-cell--o" : cell === -1
+                      })}
                      onClick={this.onHitCell}
                      data-y={y}
                      data-x={x}
