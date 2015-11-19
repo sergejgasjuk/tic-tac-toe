@@ -96,7 +96,7 @@ let Game = React.createClass({
 
       gameStarted = false;
 
-      this.setState({winner, gameStarted});
+      this.setState({winnerSign, gameStarted});
     }
 
     // set draw

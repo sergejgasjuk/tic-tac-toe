@@ -74,7 +74,7 @@ $cellSize : 75px;
   border-radius: 2px;
   cursor: pointer;
   overflow: hidden;
-  transition: background .2s, color, text-shadow .3s ease-in;
+  transition: background .2s, color, text-shadow .3s ease-in-out;
 
   &--hover-x {
     &:before {
