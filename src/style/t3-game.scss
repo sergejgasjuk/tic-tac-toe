@@ -8,9 +8,12 @@ $cellHoverBG: #ecf0f1;
 $cellDefaultBG: $white;
 $cellColor1: #34495e;
 $cellColor2: #c0392b;
-$cellTextShadow: -1px 5px 5px rgba($black, 100);
+//$cellTextShadow: -1px 5px 5px rgba($black, 100);
+//$cellHoverTextShadow: -1px 5px 5px rgba($black, 50);
 $cellXBG: #3498db;
-$cellYBG: #e67e22;
+$cellXWinBG: #8e44ad;
+$cellOBG: #e67e22;
+$cellOWinBG: #d35400;
 $cellBoxShadow: #16a085;
 $cellSize : 75px;
 
@@ -22,9 +25,21 @@ $cellSize : 75px;
   font-variant: normal !important;
   text-transform: none !important;
   display: block;
-  text-shadow: $cellTextShadow;
+  //text-shadow: $cellTextShadow;
   line-height: 1;
   content: $icon;
+}
+
+@mixin icon-x {
+  @include icon-gen("x");
+  //padding-top: 15%;
+  font-size: 3em;
+}
+
+@mixin icon-o {
+  @include icon-gen("o");
+  //padding-top: 2%;
+  font-size: 2.2em;
 }
 
 // styles
@@ -52,41 +67,71 @@ $cellSize : 75px;
   width: $cellSize;
   height: $cellSize;
   margin: 2px;
-  color: $cellColor1;
+  color: $cellHoverBG;
   background: $white;
   box-shadow: 0 0 1px $cellBoxShadow inset;
+  text-shadow: -1px 5px 5px rgba($black, 0);
   border-radius: 2px;
   cursor: pointer;
   overflow: hidden;
-  transition: background .2s;
+  transition: background .2s, color, text-shadow .3s ease-in;
 
-  &:hover {
+  &--hover-x {
+    &:before {
+      @include icon-x;
+    }
+  }
+
+  &--hover-o {
+    &:before {
+      @include icon-o;
+    }
+  }
+
+  &--hover-x,
+  &--hover-o {
+    color: $cellHoverBG;
+    text-shadow: -1px 5px 5px rgba($black, 50);
     background: $cellHoverBG;
+
+    &:before {
+      opacity: 0.5;
+    }
   }
 
   &--x {
     background: $cellXBG !important;
 
     &:before {
-      @include icon-gen("x");
-      padding-top: 15%;
-      font-size: 3em;
+      @include icon-x;
+    }
+
+    &_winner {
+      background: $cellXWinBG;
     }
   }
 
   &--o {
-    background: $cellYBG !important;
+    background: $cellOBG !important;
 
     &:before {
-      @include icon-gen("o");
-      padding-top: 2%;
-      font-size: 2.2em;
+      @include icon-o;
+    }
+
+    &_winner {
+      background: $cellOWinBG;
     }
   }
 
   &--x,
   &--o {
+    color: $cellColor1;
+    text-shadow: -1px 5px 5px rgba($black, 100);
     box-shadow: none;
     cursor: default;
+
+    &:before {
+      opacity: 1;
+    }
   }
 }

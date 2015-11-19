@@ -4,15 +4,19 @@ import classNames from "classnames/bind";
 
 const CELL_X = 1;
 const CELL_O = -1;
-const CELL_X_WIN = CELL_X * 3;
-const CELL_O_WIN = CELL_O * 3;
+const CELL_X_WIN = 10;
+const CELL_O_WIN = -10;
 let css = {
   game  : "t3-game",
   field : "t3-field",
   row   : "t3-row",
   cell  : "t3-cell",
   cellX : "t3-cell--x",
-  cellO : "t3-cell--o"
+  cellO : "t3-cell--o",
+  cellXWin: "t3-cell--x_winner",
+  cellOWin: "t3-cell--o_winner",
+  cellXHover: "t3-cell--hover-x",
+  cellOHover: "t3-cell--hover-o"
 };
 let cx = classNames.bind(css);
 
@@ -26,7 +30,7 @@ let Game = React.createClass({
       ],
       currentSign: CELL_X,
       gameStarted: true,
-      winner: null
+      winnerSign: null
     }
   },
 
@@ -60,16 +64,34 @@ let Game = React.createClass({
     //this._calculatePoints();
   },
 
+  onMouseOverCell: function(e) {
+    if (e.target.dataset.occupied) {
+      return false;
+    }
+
+    let hoverClass = this.state.currentSign === CELL_X ? cx('cellXHover') : cx('cellOHover');
+
+    e.target.classList.add(hoverClass);
+  },
+
+  onMouseOutCell: function(e) {
+    if (e.target.dataset.occupied) {
+      return false;
+    }
+
+    e.target.classList.remove(cx('cellXHover'), cx('cellOHover'));
+  },
+
   checkGameStatus: function() {
-    let {winner, gameStarted} = this.state;
+    let {field, winnerSign, gameStarted} = this.state;
 
     let w = this._calculatePoints();
 
     if (w) {
       if (w.result === CELL_X) {
-        winner = CELL_X;
+        winnerSign = CELL_X;
       } else {
-        winner = CELL_O;
+        winnerSign = CELL_O;
       }
 
       gameStarted = false;
@@ -118,6 +140,8 @@ let Game = React.createClass({
 
       n += 1;
     }
+
+    return false;
   },
 
   render: function() {
@@ -132,11 +156,15 @@ let Game = React.createClass({
                 <div className={cx(
                       'cell',
                       {
-                        cellX: cell === CELL_X,
-                        cellO: cell === CELL_O
+                        cellX: cell === CELL_X || cell === CELL_X_WIN,
+                        cellO: cell === CELL_O || cell === CELL_O_WIN,
+                        cellXWin: cell === CELL_X_WIN,
+                        cellOWin: cell === CELL_O_WIN
                       }
                     )}
                     onClick={this.onHitCell}
+                    onMouseOver={this.onMouseOverCell}
+                    onMouseOut={this.onMouseOutCell}
                     data-y={y}
                     data-x={x}
                     key={`cell_y=${y}_x=${x}`}>
