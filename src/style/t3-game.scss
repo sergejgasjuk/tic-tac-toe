@@ -11,9 +11,9 @@ $cellColor2: #c0392b;
 //$cellTextShadow: -1px 5px 5px rgba($black, 100);
 //$cellHoverTextShadow: -1px 5px 5px rgba($black, 50);
 $cellXBG: #3498db;
-$cellXWinBG: #8e44ad;
+$cellXWinBG: #f1c40f;
 $cellOBG: #e67e22;
-$cellOWinBG: #d35400;
+$cellOWinBG: #f1c40f;
 $cellBoxShadow: #16a085;
 $cellSize : 75px;
 
@@ -52,7 +52,7 @@ $cellSize : 75px;
   display: flex;
   flex-flow: column;
   padding: 2px;
-  font-size: 25px;
+  //font-size: 25px;
   border: 1px solid #2c3e50;
 }
 
@@ -100,7 +100,7 @@ $cellSize : 75px;
   }
 
   &--x {
-    background: $cellXBG !important;
+    background: $cellXBG;
 
     &:before {
       @include icon-x;
@@ -112,7 +112,7 @@ $cellSize : 75px;
   }
 
   &--o {
-    background: $cellOBG !important;
+    background: $cellOBG;
 
     &:before {
       @include icon-o;

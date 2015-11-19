@@ -70,7 +70,7 @@ let Game = React.createClass({
   },
 
   onMouseOverCell: function(e) {
-    if (e.target.dataset.occupied) {
+    if (e.target.dataset.occupied || !this.state.gameStarted) {
       return false;
     }
 
@@ -80,9 +80,9 @@ let Game = React.createClass({
   },
 
   onMouseOutCell: function(e) {
-    if (e.target.dataset.occupied) {
-      return false;
-    }
+    //if (e.target.dataset.occupied) {
+    //  return false;
+    //}
 
     e.target.classList.remove(cx('cellXHover'), cx('cellOHover'));
   },
@@ -99,14 +99,14 @@ let Game = React.createClass({
       [{y: 0, x: 0}, {y: 1, x: 1}, {y: 2, x: 2}],
       [{y: 0, x: 2}, {y: 1, x: 1}, {y: 2, x: 0}]
     ];
-    let highLightRow;
+    let highLightRow = [];
     let n = 0;
     while (n < winCases.length) {
       let result = winCases[n].reduce((prev, curr) => prev + field[curr.y][curr.x], 0);
 
       if ((result / 3) === CELL_X || (result / 3) === CELL_O) {
-        winnerSign = result;
-        highLightRow = winCases[n];
+        winnerSign = result / 3;
+        highLightRow = winCases[n].slice(0);
         gameStarted = !gameStarted;
         break;
       }
@@ -114,7 +114,12 @@ let Game = React.createClass({
       n += 1;
     }
 
-    this.setState({winnerSign, gameStarted});
+    let f = winnerSign === CELL_X ? CELL_X_WIN : CELL_O_WIN;
+    highLightRow.forEach((cell) => {
+      field[cell.y][cell.x] = f
+    });
+
+    this.setState({field, winnerSign, gameStarted});
   },
 
   render: function() {
@@ -129,9 +134,9 @@ let Game = React.createClass({
                 <div className={cx(
                       'cell',
                       {
-                        cellX: cell === CELL_X || cell === CELL_X_WIN,
+                        cellX: cell === CELL_X || cell === +CELL_X_WIN,
                         cellO: cell === CELL_O || cell === CELL_O_WIN,
-                        cellXWin: cell === CELL_X_WIN,
+                        cellXWin: cell === +CELL_X_WIN,
                         cellOWin: cell === CELL_O_WIN
                       }
                     )}
