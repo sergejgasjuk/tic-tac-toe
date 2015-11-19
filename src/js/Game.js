@@ -51,17 +51,22 @@ let Game = React.createClass({
 
     let coordX = e.target.dataset.x;
     let coordY = e.target.dataset.y;
-    let {currentSign} = this.state;
+    let {field, currentSign} = this.state;
 
-    this._updateCell(coordY, coordX, currentSign);
+    field.forEach((row) => {
+      row.forEach((cell) => {
+        field[coordY][coordX] = currentSign;
+      });
+    });
 
     currentSign = currentSign === CELL_X ? CELL_O : CELL_X;
+
     this.setState({
+      field,
       currentSign
     });
 
     this.checkGameStatus();
-    //this._calculatePoints();
   },
 
   onMouseOverCell: function(e) {
@@ -84,64 +89,32 @@ let Game = React.createClass({
 
   checkGameStatus: function() {
     let {field, winnerSign, gameStarted} = this.state;
-
-    let w = this._calculatePoints();
-
-    if (w) {
-      if (w.result === CELL_X) {
-        winnerSign = CELL_X;
-      } else {
-        winnerSign = CELL_O;
-      }
-
-      gameStarted = false;
-
-      this.setState({winnerSign, gameStarted});
-    }
-
-    // set draw
-    // stop game
-  },
-
-  _updateCell(y, x, val) {
-    let {field} = this.state;
-
-    field.forEach((row) => {
-      row.forEach((cell) => {
-        field[y][x] = val;
-      });
-    });
-
-    this.setState({
-      field
-    });
-  },
-
-  _calculatePoints: function() {
-    let {field} = this.state;
-    let n = 0;
-    let rows = [
-      field[0],
-      [field[0][0], field[1][0], field[2][0]],
-      field[1],
-      [field[0][1], field[1][1], field[2][1]],
-      field[2],
-      [field[0][2], field[1][2], field[2][2]],
-      [field[0][0], field[1][1], field[2][2]],
-      [field[0][2], field[1][1], field[2][0]]
+    let winCases = [
+      [{y: 0, x: 0}, {y: 0, x: 1}, {y: 0, x: 2}],
+      [{y: 0, x: 0}, {y: 1, x: 0}, {y: 2, x: 0}],
+      [{y: 1, x: 0}, {y: 1, x: 1}, {y: 1, x: 2}],
+      [{y: 0, x: 1}, {y: 1, x: 1}, {y: 2, x: 1}],
+      [{y: 2, x: 0}, {y: 2, x: 1}, {y: 2, x: 2}],
+      [{y: 0, x: 2}, {y: 1, x: 2}, {y: 2, x: 2}],
+      [{y: 0, x: 0}, {y: 1, x: 1}, {y: 2, x: 2}],
+      [{y: 0, x: 2}, {y: 1, x: 1}, {y: 2, x: 0}]
     ];
-
-    while (n < rows.length) {
-      let result = rows[n].reduce((i, j) => i + j);
+    let highLightRow;
+    let n = 0;
+    while (n < winCases.length) {
+      let result = winCases[n].reduce((prev, curr) => prev + field[curr.y][curr.x], 0);
 
       if ((result / 3) === CELL_X || (result / 3) === CELL_O) {
-        return {result: result, row: rows[n]};
+        winnerSign = result;
+        highLightRow = winCases[n];
+        gameStarted = !gameStarted;
+        break;
       }
 
       n += 1;
     }
 
-    return false;
+    this.setState({winnerSign, gameStarted});
   },
 
   render: function() {
