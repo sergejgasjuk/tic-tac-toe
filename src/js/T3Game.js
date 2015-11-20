@@ -40,37 +40,68 @@ let T3Game = React.createClass({
         [{y: 0, x: 0}, {y: 1, x: 1}, {y: 2, x: 2}],
         [{y: 0, x: 2}, {y: 1, x: 1}, {y: 2, x: 0}]
       ],
-      currentSign: CELL_X,
-      winner: null,
-      isActiveGame: true
+      activeSign: CELL_X,
+      isActiveGame: true,
+      isDrawGame: false,
+      isWinGame: false
     }
   },
 
   onHitCell: function(y, x) {
-    let {field, currentSign, isActiveGame} = this.state;
+    let {field, activeSign, isActiveGame} = this.state;
 
     if (field[y][x] !== 0 || !isActiveGame) {
       return false;
     }
 
-    field.forEach((row) => {
-      row.forEach((cell) => {
-        field[y][x] = currentSign;
-      });
-    });
+    field[y][x] = activeSign;
+    activeSign = activeSign === CELL_X ? CELL_O : CELL_X;
 
-    currentSign = currentSign === CELL_X ? CELL_O : CELL_X;
-
-    this.setState({
-      field,
-      currentSign
-    });
-
-    this.checkWin();
+    this.setState({field, activeSign});
+    this.updateGame();
   },
 
-  checkWin: function() {
-    let {field, winCombos, winner, isActiveGame} = this.state;
+  updateGame: function() {
+    let win, draw;
+    let {isActiveGame, isDrawGame, isWinGame} = this.state;
+
+    win = this.checkWin();
+    draw = !win && !this.checkEmptyCells();
+
+    if (!win && !draw) {
+      return false;
+    }
+
+    if (win) {
+      console.log("is win");
+      let winRow = win.row;
+      let winSign = win.sign;
+      isWinGame = !isWinGame;
+
+      this.setState({isWinGame, winRow, winSign});
+    } else if (draw) {
+      console.log("is draw");
+      isDrawGame = !isDrawGame;
+      this.setState({isDrawGame});
+    }
+
+    isActiveGame = !isActiveGame;
+    this.setState({isActiveGame});
+  },
+
+  checkWin() {
+    let {field} = this.state;
+    let winCombos = [
+      [{y: 0, x: 0}, {y: 0, x: 1}, {y: 0, x: 2}],
+      [{y: 0, x: 0}, {y: 1, x: 0}, {y: 2, x: 0}],
+      [{y: 1, x: 0}, {y: 1, x: 1}, {y: 1, x: 2}],
+      [{y: 0, x: 1}, {y: 1, x: 1}, {y: 2, x: 1}],
+      [{y: 2, x: 0}, {y: 2, x: 1}, {y: 2, x: 2}],
+      [{y: 0, x: 2}, {y: 1, x: 2}, {y: 2, x: 2}],
+      [{y: 0, x: 0}, {y: 1, x: 1}, {y: 2, x: 2}],
+      [{y: 0, x: 2}, {y: 1, x: 1}, {y: 2, x: 0}]
+    ];
+    let sign, row;
 
     let n = 0;
     while (n < winCombos.length) {
@@ -78,19 +109,31 @@ let T3Game = React.createClass({
       let result = pointsInRow / 3;
 
       if (result === CELL_X || result === CELL_O) {
-        winner = result;
-        isActiveGame = !isActiveGame;
+        sign = result;
+        row = winCombos[n];
         break;
       }
 
       n += 1;
     }
 
-    this.setState({field, winner, isActiveGame});
+    return sign && row ? {sign, row} : false;
+  },
+
+  //TODO fix bug
+  checkEmptyCells() {
+    let hasEmptyCells = false;
+    let {field} = this.state;
+
+    field.forEach((row) => {
+      hasEmptyCells = row.some((el) => el === 0)
+    });
+
+    return hasEmptyCells;
   },
 
   resetGame: function() {
-    let {field, currentSign, isActiveGame} = this.state;
+    let {field, activeSign, isActiveGame} = this.state;
 
     field.forEach((row, y) => {
       row.forEach((cell, x) => {
@@ -98,19 +141,15 @@ let T3Game = React.createClass({
       });
     });
 
-    currentSign = CELL_X;
-    isActiveGame = !isActiveGame;
+    activeSign = CELL_X;
+    isActiveGame = true;
 
-    this.setState({
-      field,
-      currentSign,
-      isActiveGame
-    });
+    this.setState({field, activeSign, isActiveGame});
   },
 
   render: function() {
     let field = this.state.field;
-    let sign = this.state.currentSign === CELL_X ? "X" : "O";
+    let sign = this.state.activeSign === CELL_X ? "X" : "O";
     let isActiveGame = this.state.isActiveGame;
 
     return (
@@ -139,13 +178,7 @@ let T3Game = React.createClass({
 });
 
 let T3Cell = React.createClass({
-  getInitialState: function(){
-    return {
-      //isOccupied: this.props.occupied
-    }
-  },
-
-  clickHandler: function(){
+  onHit: function(){
     let coordY = this.props.posY;
     let coordX = this.props.posX;
 
@@ -164,20 +197,20 @@ let T3Cell = React.createClass({
     return (
       <div
         className={className}
-        onClick={this.clickHandler}></div>
+        onClick={this.onHit}></div>
     )
   }
 });
 
 let T3Panel = React.createClass({
   render: function() {
-    let currentSign = this.props.sign;
+    let activeSign = this.props.sign;
 
     return (
       <div
         className={cx('panel')}
         onClick={this.props.onReset}
-        > Current: {currentSign}
+        > Current: {activeSign}
       </div>
     )
   }
