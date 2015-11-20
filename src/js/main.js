@@ -1,5 +1,5 @@
 import React from "react";
 import ReactDom from "react-dom";
-import Game from "./Game";
+import T3Game from "./Game";
 
-ReactDom.render(<Game/>, document.getElementById("container"));
+ReactDom.render(<T3Game/>, document.getElementById("container"));
