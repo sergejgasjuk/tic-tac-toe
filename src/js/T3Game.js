@@ -9,6 +9,8 @@ const CELL_O_WIN = -10;
 let css = {
   game  : "t3-game",
   panel : "t3-panel",
+  panelX: "t3-panel--active-x",
+  panelO: "t3-panel--active-o",
   field : "t3-field",
   row   : "t3-row",
   cell  : "t3-cell",
@@ -120,20 +122,14 @@ let T3Game = React.createClass({
     return sign && row ? {sign, row} : false;
   },
 
-  //TODO fix bug
   checkEmptyCells() {
-    let hasEmptyCells = false;
     let {field} = this.state;
 
-    field.forEach((row) => {
-      hasEmptyCells = row.some((el) => el === 0)
-    });
-
-    return hasEmptyCells;
+    return field[0].some((el) => el === 0) || field[1].some((el) => el === 0) || field[2].some((el) => el === 0);
   },
 
   resetGame: function() {
-    let {field, activeSign, isActiveGame} = this.state;
+    let {field, activeSign, isActiveGame, isDrawGame, isWinGame, winRow, winSign} = this.state;
 
     field.forEach((row, y) => {
       row.forEach((cell, x) => {
@@ -143,14 +139,16 @@ let T3Game = React.createClass({
 
     activeSign = CELL_X;
     isActiveGame = true;
+    isWinGame = isDrawGame = false;
+    winRow = winSign = null;
 
-    this.setState({field, activeSign, isActiveGame});
+    this.setState({field, activeSign, isActiveGame, isDrawGame, isWinGame, winRow, winSign});
   },
 
   render: function() {
-    let field = this.state.field;
-    let sign = this.state.activeSign === CELL_X ? "X" : "O";
-    let isActiveGame = this.state.isActiveGame;
+    let {field, isActiveGame, isWinGame, isDrawGame, winSign} = this.state;
+    let activeSign = this.state.activeSign === CELL_X ? "X" : "O";
+    winSign = winSign === CELL_X ? "X" : "O";
 
     return (
       <div className={cx('game')}>
@@ -171,7 +169,11 @@ let T3Game = React.createClass({
         </div>
         <T3Panel
           onReset={this.resetGame}
-          sign={sign}/>
+          isActiveGame={isActiveGame}
+          isWinGame={isWinGame}
+          isDrawGame={isDrawGame}
+          winSign={winSign}
+          activeSign={activeSign}/>
       </div>
     )
   }
@@ -204,13 +206,34 @@ let T3Cell = React.createClass({
 
 let T3Panel = React.createClass({
   render: function() {
-    let activeSign = this.props.sign;
+    let {activeSign, winSign, isActiveGame, isWinGame, isDrawGame} = this.props;
+    let gameOn = isActiveGame && !(isWinGame || isDrawGame);
+    let gameOff = !isActiveGame && (isWinGame || isDrawGame);
 
     return (
       <div
-        className={cx('panel')}
-        onClick={this.props.onReset}
-        > Current: {activeSign}
+        className={cx(
+          'panel',
+          {
+            panelX: activeSign === "X",
+            panelO: activeSign === "O"
+          }
+        )}
+        onClick={gameOff ? this.props.onReset : null}>
+        {gameOn &&
+          <div>Player: <b>{activeSign}</b></div>
+        }
+        {gameOff &&
+          <div>
+            {isDrawGame &&
+              <div>It's Draw!</div>
+            }
+            {isWinGame &&
+              <div>Winner: <b>{winSign}</b></div>
+            }
+            <div>Click to start again!</div>
+          </div>
+        }
       </div>
     )
   }

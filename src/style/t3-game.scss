@@ -50,17 +50,32 @@ $cellSize : 75px;
 }
 
 .t3-panel {
+  display: flex;
+  align-content: center;
+  justify-content: center;
   width: 150px;
+  font: 18px Verdana;
+  color: $white;
   background: $panelBG;
-  cursor: pointer;
+  cursor: default;
+  border: 2px solid $panelBG;
+  border-left: 0;
+
+  &--active-x {
+    background: $cellXBG;
+  }
+
+  &--active-o {
+    background: $cellOBG;
+  }
 }
 
 .t3-field {
   display: flex;
   flex-flow: column;
   padding: 2px;
-  //font-size: 25px;
-  border: 1px solid $panelBG;
+  border: 2px solid $panelBG;
+  border-right: 0;
 }
 
 .t3-row {
