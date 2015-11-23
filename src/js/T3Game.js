@@ -215,8 +215,8 @@ let T3Panel = React.createClass({
         className={cx(
           'panel',
           {
-            panelX: activeSign === "X",
-            panelO: activeSign === "O"
+            panelX: activeSign === "X" && isActiveGame,
+            panelO: activeSign === "O" && isActiveGame
           }
         )}
         onClick={gameOff ? this.props.onReset : null}>
@@ -226,12 +226,12 @@ let T3Panel = React.createClass({
         {gameOff &&
           <div>
             {isDrawGame &&
-              <div>It's Draw!</div>
+              <div>It's <b>Draw!</b></div>
             }
             {isWinGame &&
               <div>Winner: <b>{winSign}</b></div>
             }
-            <div>Click to start again!</div>
+            <small>Click to start again!</small>
           </div>
         }
       </div>

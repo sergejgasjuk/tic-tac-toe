@@ -52,14 +52,17 @@ $cellSize : 75px;
 .t3-panel {
   display: flex;
   align-content: center;
+  align-items: center;
   justify-content: center;
   width: 150px;
   font: 18px Verdana;
   color: $white;
   background: $panelBG;
-  cursor: default;
+  cursor: pointer;
   border: 2px solid $panelBG;
   border-left: 0;
+  text-shadow: 1px 1px 2px rgba($black, 50);
+  transition: all .3s ease-in-out;
 
   &--active-x {
     background: $cellXBG;
@@ -67,6 +70,11 @@ $cellSize : 75px;
 
   &--active-o {
     background: $cellOBG;
+  }
+
+  &--active-x,
+  &--active-o {
+    cursor: default;
   }
 }
 
