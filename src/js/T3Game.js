@@ -4,8 +4,7 @@ import classNames from "classnames/bind";
 
 const CELL_X = 1;
 const CELL_O = -1;
-const CELL_X_WIN = 10;
-const CELL_O_WIN = -10;
+
 let css = {
   game  : "t3-game",
   panel : "t3-panel",
@@ -45,7 +44,8 @@ let T3Game = React.createClass({
       activeSign: CELL_X,
       isActiveGame: true,
       isDrawGame: false,
-      isWinGame: false
+      isWinGame: false,
+      winSign: null
     }
   },
 
@@ -146,9 +146,7 @@ let T3Game = React.createClass({
   },
 
   render: function() {
-    let {field, isActiveGame, isWinGame, isDrawGame, winSign} = this.state;
-    let activeSign = this.state.activeSign === CELL_X ? "X" : "O";
-    winSign = winSign === CELL_X ? "X" : "O";
+    let {field, isActiveGame, isWinGame, isDrawGame, winSign, activeSign} = this.state;
 
     return (
       <div className={cx('game')}>
@@ -210,13 +208,18 @@ let T3Panel = React.createClass({
     let gameOn = isActiveGame && !(isWinGame || isDrawGame);
     let gameOff = !isActiveGame && (isWinGame || isDrawGame);
 
+    let win = activeSign === CELL_X ? CELL_O : CELL_X;
+    activeSign = activeSign === CELL_X ? "X" : "O";
+    console.log("ac: " ,activeSign)
+    console.log("win: " ,win)
+    win = win === CELL_X ? "X" : "O";
     return (
       <div
         className={cx(
           'panel',
           {
-            panelX: activeSign === "X" && isActiveGame,
-            panelO: activeSign === "O" && isActiveGame
+            panelX: activeSign === CELL_X && isActiveGame,
+            panelO: activeSign === CELL_O && isActiveGame
           }
         )}
         onClick={gameOff ? this.props.onReset : null}>
@@ -229,7 +232,7 @@ let T3Panel = React.createClass({
               <div>It's <b>Draw!</b></div>
             }
             {isWinGame &&
-              <div>Winner: <b>{winSign}</b></div>
+              <div>Winner: <b>{win}</b></div>
             }
             <small>Click to start again!</small>
           </div>
