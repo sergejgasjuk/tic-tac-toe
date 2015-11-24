@@ -9,8 +9,6 @@ $cellHoverBG: #ecf0f1;
 $cellDefaultBG: $white;
 $cellColor1: #34495e;
 $cellColor2: #c0392b;
-//$cellTextShadow: -1px 5px 5px rgba($black, 100);
-//$cellHoverTextShadow: -1px 5px 5px rgba($black, 50);
 $cellXBG: #3498db;
 $cellXWinBG: #f1c40f;
 $cellOBG: #e67e22;
@@ -26,21 +24,18 @@ $cellSize : 75px;
   font-variant: normal !important;
   text-transform: none !important;
   display: block;
-  //text-shadow: $cellTextShadow;
   line-height: 1;
   content: $icon;
 }
 
 @mixin icon-x {
   @include icon-gen("x");
-  //padding-top: 15%;
   font-size: 3em;
 }
 
 @mixin icon-o {
   @include icon-gen("o");
-  //padding-top: 2%;
-  font-size: 2.2em;
+  font-size: 2.4em;
 }
 
 // styles
@@ -54,14 +49,14 @@ $cellSize : 75px;
   align-content: center;
   align-items: center;
   justify-content: center;
-  width: 150px;
+  min-width: 165px;
+	padding: 0 15px;
   font: 18px Verdana;
   color: $white;
   background: $panelBG;
   cursor: pointer;
-  border: 2px solid $panelBG;
-  border-left: 0;
   text-shadow: 1px 1px 2px rgba($black, 50);
+	text-align: center;
   transition: all .3s ease-in-out;
 
   &--active-x {
@@ -78,12 +73,38 @@ $cellSize : 75px;
   }
 }
 
+.t3-panel-item {
+	margin: 0 0 15px;
+}
+
+.t3-text {
+	vertical-align: middle;
+
+	&--small {
+		font-size: 70%;
+	}
+
+	&--bold {
+		font-weight: bold;
+		font-size: 150%;
+	}
+}
+
 .t3-field {
   display: flex;
   flex-flow: column;
   padding: 2px;
   border: 2px solid $panelBG;
   border-right: 0;
+	transition: all .3s ease-in-out;
+
+	&--active-x {
+		border-color: $cellXBG;
+	}
+
+	&--active-o {
+		border-color: $cellOBG;
+	}
 }
 
 .t3-row {
@@ -97,48 +118,21 @@ $cellSize : 75px;
   width: $cellSize;
   height: $cellSize;
   margin: 2px;
-  color: $cellHoverBG;
+  color: rgba($cellColor1, .2);
   background: $white;
   box-shadow: 0 0 1px $cellBoxShadow inset;
   text-shadow: -1px 5px 5px rgba($black, 0);
   border-radius: 2px;
-  cursor: pointer;
   overflow: hidden;
-  transition: background .2s, color, text-shadow .3s ease-in-out;
+  transition: background .25s ease-in-out, color .3s linear , text-shadow .2s linear;
 
-  &--occupied {
-    color: $cellColor1;
-    text-shadow: -1px 5px 5px rgba($black, 100);
-    box-shadow: none;
-    cursor: default;
-
-    &:before {
-      opacity: 1;
-    }
-  }
-
-  &--hover-x {
-    &:before {
-      @include icon-x;
-    }
-  }
-
-  &--hover-o {
-    &:before {
-      @include icon-o;
-    }
-  }
-
-  &--hover-x,
-  &--hover-o {
-    color: $cellHoverBG;
-    text-shadow: -1px 5px 5px rgba($black, 50);
-    background: $cellHoverBG;
-
-    &:before {
-      opacity: 0.5;
-    }
-  }
+	&--x,
+	&--o {
+		color: $cellColor1;
+		text-shadow: -1px 5px 5px rgba($black, 100);
+		box-shadow: none;
+		cursor: default;
+	}
 
   &--x {
     background: $cellXBG;
@@ -163,4 +157,29 @@ $cellSize : 75px;
       background: $cellOWinBG;
     }
   }
+
+	&--potential-x,
+	&--potential-o {
+		cursor: pointer;
+	}
+
+	&--potential-x {
+		&:before {
+			@include icon-x;
+		}
+
+		&:hover {
+			background: rgba($cellXBG, .5);
+		}
+	}
+
+	&--potential-o {
+		&:before {
+			@include icon-o;
+		}
+
+		&:hover {
+			background: rgba($cellOBG, .5);
+		}
+	}
 }
