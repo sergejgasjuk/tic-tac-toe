@@ -10,12 +10,12 @@ let css = {
   field     : "t3-field",
   fieldX    : "t3-field--active-x",
   fieldO    : "t3-field--active-o",
+  fieldNA   : "t3-field--not-active",
   row       : "t3-row",
   cell      : "t3-cell",
   cellX     : "t3-cell--x",
   cellO     : "t3-cell--o",
-  cellXWin  : "t3-cell--x_winner",
-  cellOWin  : "t3-cell--o_winner",
+  winnerCell: "t3-cell--winner",
   potentialX: "t3-cell--potential-x",
   potentialO: "t3-cell--potential-o",
   text      : "t3-text",
@@ -124,6 +124,22 @@ let T3Game = React.createClass({
     return field[0].some((el) => el === 0) || field[1].some((el) => el === 0) || field[2].some((el) => el === 0);
   },
 
+  checkCellInRow(y, x) {
+    let {winRow} = this.state;
+
+    if (!winRow) {
+      return false;
+    }
+
+    for (let cell of winRow) {
+      if (cell.x === x && cell.y === y) {
+        return true;
+      }
+    }
+
+    return false;
+  },
+
   resetGame: function() {
     let {field, activeSign, isActiveGame, isDrawGame, isWinGame, winRow} = this.state;
 
@@ -136,6 +152,7 @@ let T3Game = React.createClass({
     activeSign = this.setRandomSign();
     isActiveGame = true;
     isWinGame = isDrawGame = false;
+    winRow = null;
 
     this.setState({field, activeSign, isActiveGame, isDrawGame, isWinGame, winRow});
   },
@@ -146,7 +163,8 @@ let T3Game = React.createClass({
       'field',
       {
         fieldX: activeSign === CELL_X && isActiveGame,
-        fieldO: activeSign === CELL_O && isActiveGame
+        fieldO: activeSign === CELL_O && isActiveGame,
+        fieldNA: !isActiveGame
       }
     );
 
@@ -164,6 +182,7 @@ let T3Game = React.createClass({
                   isActiveGame={isActiveGame}
                   activeSign={activeSign}
                   isOccupied={field[y][x] !== 0}
+                  isWinner={this.checkCellInRow(y, x)}
                   key={`c_y=${y}_x=${x}`}/>
               )}
             </div>
@@ -189,7 +208,7 @@ let T3Cell = React.createClass({
   },
 
   render: function() {
-    let {cellVal, isOccupied, activeSign, isActiveGame} = this.props;
+    let {cellVal, isOccupied, isWinner, activeSign, isActiveGame} = this.props;
     let isPotential = isActiveGame && !isOccupied;
 
     let className = cx(
@@ -198,13 +217,12 @@ let T3Cell = React.createClass({
         cellX: cellVal === CELL_X,
         cellO: cellVal === CELL_O,
         potentialX: isPotential && activeSign === CELL_X,
-        potentialO: isPotential && activeSign === CELL_O
+        potentialO: isPotential && activeSign === CELL_O,
+        winnerCell: isWinner
       }
     );
     return (
-      <div
-        className={className}
-        onClick={this.onHit}></div>
+      <div className={className} onClick={this.onHit}></div>
     )
   }
 });

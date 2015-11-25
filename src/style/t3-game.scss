@@ -10,9 +10,8 @@ $cellDefaultBG: $white;
 $cellColor1: #34495e;
 $cellColor2: #c0392b;
 $cellXBG: #3498db;
-$cellXWinBG: #f1c40f;
 $cellOBG: #e67e22;
-$cellOWinBG: #f1c40f;
+$winnerCell: #c0392b;
 $cellBoxShadow: #16a085;
 $cellSize : 75px;
 
@@ -105,6 +104,12 @@ $cellSize : 75px;
 	&--active-o {
 		border-color: $cellOBG;
 	}
+
+	&--not-active {
+		.t3-cell:not(.t3-cell--winner) {
+			opacity: .35;
+		}
+	}
 }
 
 .t3-row {
@@ -124,7 +129,7 @@ $cellSize : 75px;
   text-shadow: -1px 5px 5px rgba($black, 0);
   border-radius: 2px;
   overflow: hidden;
-  transition: background .25s ease-in-out, color .3s linear , text-shadow .2s linear;
+  transition: background .25s ease-in-out, color .3s linear , text-shadow .2s linear, opacity .25s ease-in-out;
 
 	&--x,
 	&--o {
@@ -140,10 +145,6 @@ $cellSize : 75px;
     &:before {
       @include icon-x;
     }
-
-    &_winner {
-      background: $cellXWinBG;
-    }
   }
 
   &--o {
@@ -152,11 +153,17 @@ $cellSize : 75px;
     &:before {
       @include icon-o;
     }
-
-    &_winner {
-      background: $cellOWinBG;
-    }
   }
+
+	&--winner {
+		background: $winnerCell;
+		font-size: 135%;
+		color: $cellHoverBG;
+		transition: transform .1s;
+		transform: scale(1.1);
+		backface-visibility: hidden;
+		border-radius: 0;
+	}
 
 	&--potential-x,
 	&--potential-o {
@@ -182,4 +189,8 @@ $cellSize : 75px;
 			background: rgba($cellOBG, .5);
 		}
 	}
+}
+
+@keyframes cell-win {
+
 }
